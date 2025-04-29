@@ -85,3 +85,50 @@ func GetNationality(ctx context.Context, name string) (*string, error) {
 	}
 	return nil, nil
 }
+
+type EnrichDate struct {
+	Age         *int
+	Gender      *string
+	Nationality *string
+}
+
+func EnrichPerson(ctx context.Context, name string) (*EnrichDate, error) {
+	type result struct {
+		age         *int
+		gender      *string
+		nationality *string
+		err         error
+	}
+	ch := make(chan result, 3)
+
+	go func() {
+		age, err := GetAge(ctx, name)
+		ch <- result{age: age, err: err}
+	}()
+	go func() {
+		gender, err := GetGender(ctx, name)
+		ch <- result{gender: gender, err: err}
+	}()
+	go func() {
+		nationality, err := GetNationality(ctx, name)
+		ch <- result{nationality: nationality, err: err}
+	}()
+
+	var data EnrichDate
+	for i := 0; i < 3; i++ {
+		res := <-ch
+		if res.err != nil {
+			log.Printf("Error enriching person: %v", res.err)
+		}
+		if res.age != nil {
+			data.Age = res.age
+		}
+		if res.gender != nil {
+			data.Gender = res.gender
+		}
+		if res.nationality != nil {
+			data.Nationality = res.nationality
+		}
+	}
+	return &data, nil
+}
