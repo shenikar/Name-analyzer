@@ -1,0 +1,263 @@
+basePath: /api/v1
+definitions:
+  github_com_shenikar_Name-analyzer_internal_model.ErrorResponse:
+    properties:
+      error:
+        example: некорректный запрос
+        type: string
+    type: object
+  github_com_shenikar_Name-analyzer_internal_model.Person:
+    properties:
+      age:
+        example: 30
+        type: integer
+      created_at:
+        example: "2024-03-20T15:04:05Z"
+        type: string
+      gender:
+        example: male
+        type: string
+      id:
+        example: 39755c70-2ddb-4a62-90ea-1eeaf07a545a
+        type: string
+      name:
+        example: Иван
+        type: string
+      nationality:
+        example: RU
+        type: string
+      patronymic:
+        example: Иванович
+        type: string
+      surname:
+        example: Иванов
+        type: string
+      updated_at:
+        example: "2024-03-20T15:04:05Z"
+        type: string
+    type: object
+  github_com_shenikar_Name-analyzer_internal_model.PersonRequest:
+    properties:
+      age:
+        example: 30
+        type: integer
+      gender:
+        example: male
+        type: string
+      name:
+        example: Иван
+        type: string
+      nationality:
+        example: RU
+        type: string
+      patronymic:
+        example: Иванович
+        type: string
+      surname:
+        example: Иванов
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: your-email@example.com
+    name: API Support
+  description: Сервис для анализа имен и обогащения данных о людях (возраст, пол,
+    национальность)
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Name Analyzer API
+  version: "1.0"
+paths:
+  /persons:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список людей с возможностью фильтрации
+      parameters:
+      - description: Фильтр по имени
+        in: query
+        name: name
+        type: string
+      - description: Фильтр по фамилии
+        in: query
+        name: surname
+        type: string
+      - description: Фильтр по полу
+        in: query
+        name: gender
+        type: string
+      - description: Фильтр по национальности
+        in: query
+        name: nationality
+        type: string
+      - description: Минимальный возраст
+        in: query
+        name: age_min
+        type: integer
+      - description: Максимальный возраст
+        in: query
+        name: age_max
+        type: integer
+      - default: 10
+        description: Количество записей на странице
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.Person'
+            type: array
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+      summary: Получить список людей
+      tags:
+      - persons
+    post:
+      consumes:
+      - application/json
+      description: Создает новую запись и обогащает её данными о возрасте, поле и
+        национальности
+      parameters:
+      - description: Данные о человеке
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.PersonRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.Person'
+        "400":
+          description: Некорректный запрос
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+      summary: Создать новую запись о человеке
+      tags:
+      - persons
+  /persons/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет запись о человеке по ID
+      parameters:
+      - description: ID человека
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Запись успешно удалена
+        "400":
+          description: Некорректный ID
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "404":
+          description: Человек не найден
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+      summary: Удалить запись о человеке
+      tags:
+      - persons
+    get:
+      consumes:
+      - application/json
+      description: Возвращает детальную информацию о человеке
+      parameters:
+      - description: ID человека
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.Person'
+        "400":
+          description: Некорректный ID
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "404":
+          description: Человек не найден
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+      summary: Получить информацию о человеке по ID
+      tags:
+      - persons
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующую запись о человеке
+      parameters:
+      - description: ID человека
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Обновленные данные
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.PersonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.Person'
+        "400":
+          description: Некорректный запрос
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "404":
+          description: Человек не найден
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_shenikar_Name-analyzer_internal_model.ErrorResponse'
+      summary: Обновить информацию о человеке
+      tags:
+      - persons
+swagger: "2.0"
