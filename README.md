@@ -142,7 +142,6 @@ curl -X DELETE http://localhost:8080/api/v1/persons/39755c70-2ddb-4a62-90ea-1eea
 - `RATE_LIMIT` - ограничение запросов в секунду
 
 ## Структура проекта
-.
 ├── cmd/
 │ └── main.go # Точка входа приложения
 ├── internal/
