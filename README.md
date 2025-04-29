@@ -130,7 +130,6 @@ curl -X DELETE http://localhost:8080/api/v1/persons/39755c70-2ddb-4a62-90ea-1eea
   "error": "некорректный запрос"
 }
 ```
-```
 
 ## Конфигурация
 
@@ -141,19 +140,6 @@ curl -X DELETE http://localhost:8080/api/v1/persons/39755c70-2ddb-4a62-90ea-1eea
 - `LOG_LEVEL` - уровень логирования
 - `RATE_LIMIT` - ограничение запросов в секунду
 
-## Структура проекта
-├── cmd/
-│ └── main.go # Точка входа приложения
-├── internal/
-│ ├── api/ # Обработчики HTTP запросов
-│ ├── db/ # Работа с базой данных
-│ ├── enrich/ # Обогащение данных через внешние API
-│ └── model/ # Модели данных
-├── migrations/ # SQL миграции
-├── config/ # Конфигурация приложения
-├── docs/ # Swagger документация
-├── docker-compose.yml # Конфигурация Docker
-└── .env # Переменные окружения
 
 ## Разработка
 
